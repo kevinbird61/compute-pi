@@ -16,7 +16,7 @@ default: computepi.o
 .PHONY: clean default
 
 %.o: %.c
-	$(CC) -c $(CFLAGS) $< -o $@ 
+	$(CC) -c $(CFLAGS) $< -o $@
 
 check: default
 	time ./time_test_baseline
@@ -27,9 +27,12 @@ check: default
 
 gencsv: default
 	for i in `seq 100 5000 25000`; do \
-		printf "%d," $$i;\
+		printf "%d " $$i;\
 		./benchmark_clock_gettime $$i; \
-	done > result_clock_gettime.csv	
+	done > result_clock_gettime.csv
+
+plot: gencsv result_clock_gettime.csv
+	gnuplot script/usage_plot.gp
 
 clean:
 	rm -f $(EXECUTABLE) *.o *.s result_clock_gettime.csv
